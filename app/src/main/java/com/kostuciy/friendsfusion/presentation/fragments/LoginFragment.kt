@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.databinding.FragmentLoginBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     override fun onCreateView(
