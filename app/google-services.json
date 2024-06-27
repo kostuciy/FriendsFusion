@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "2683003758",
+    "project_id": "friendsfusion-cd95d",
+    "storage_bucket": "friendsfusion-cd95d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2683003758:android:56d93d97e6fa4bfa5b977f",
+        "android_client_info": {
+          "package_name": "com.kostuciy.friendsfusion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDabpRlXqYyVveuanr7_urGgaByZ8XwdRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
