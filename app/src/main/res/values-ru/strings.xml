@@ -2,8 +2,10 @@
 <resources>
     <string name="app_name">FriendsFusion</string>
     <string name="login">Вход</string>
-    <string name="phone_number">Номер телефона</string>
+    <string name="email">Электронная почта</string>
     <string name="password">Пароль</string>
     <string name="submit">Отправить</string>
     <string name="registration">Регистрация</string>
+    <string name="username">Имя пользователя</string>
+    <string name="password_confirm">Confirm password</string>
 </resources>

@@ -5,11 +5,11 @@ import com.kostuciy.domain.model.User
 
 interface AuthRepository {
 
-    suspend fun register(email: String, password: String): Response<Boolean>
+    suspend fun getAuthData(): Response<User?>
 
-    suspend fun signIn(email: String, password: String): Response<Boolean>
+    suspend fun register(email: String, password: String, username: String): Response<User>
+
+    suspend fun signIn(email: String, password: String): Response<User?>
 
     suspend fun signOut(): Response<Boolean>
-
-    suspend fun getAuthData(): Response<User?>
 }

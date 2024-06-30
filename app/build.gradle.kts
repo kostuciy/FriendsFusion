@@ -47,14 +47,14 @@ dependencies {
 
 //    Base
     implementation(libs.androidx.core.ktx)
+    testImplementation(libs.junit)
+    implementation(project(":data"))
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(project(":domain"))
-    implementation(project(":data"))
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 

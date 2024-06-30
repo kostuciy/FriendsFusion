@@ -1,6 +1,5 @@
 package com.kostuciy.friendsfusion.di
 
-import com.google.firebase.auth.FirebaseAuth
 import com.kostuciy.data.repository.AuthRepositoryImpl
 import com.kostuciy.domain.repository.AuthRepository
 import com.kostuciy.domain.usecase.GetAuthStateUseCase
@@ -19,6 +18,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DomainModule {
+
     @Binds
     @Singleton
     abstract fun bindAuthRepository(
@@ -29,7 +29,7 @@ abstract class DomainModule {
 
 @Module
 @InstallIn(ViewModelComponent::class)
-class UseCaseModule {
+object UseCaseModule {
 
     @Provides
     @ViewModelScoped

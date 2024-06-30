@@ -9,6 +9,7 @@ class RegisterUseCase @Inject constructor(
 
     suspend fun execute(
         email: String,
-        password: String
-    ) = repository.register(email, password)
+        password: String,
+        username: String
+    ) = repository.register(email, password, username)
 }

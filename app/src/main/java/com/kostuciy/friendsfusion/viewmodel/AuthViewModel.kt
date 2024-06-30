@@ -1,23 +1,18 @@
 package com.kostuciy.friendsfusion.viewmodel
 
-import androidx.annotation.MainThread
-import androidx.annotation.UiThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kostuciy.domain.model.Response
 import com.kostuciy.domain.model.User
 import com.kostuciy.domain.model.state.AuthState
-import com.kostuciy.domain.model.state.UIState
-import com.kostuciy.domain.repository.AuthRepository
 import com.kostuciy.domain.usecase.GetAuthStateUseCase
 import com.kostuciy.domain.usecase.RegisterUseCase
 import com.kostuciy.domain.usecase.SignInUseCase
 import com.kostuciy.domain.usecase.SignOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,54 +23,70 @@ class AuthViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
 
-    var uiState: UIState = UIState.Loading
-        private set
-
-    var authState: AuthState = AuthState()
-        private set
+    private var _state: MutableStateFlow<AuthState<User>> =
+        MutableStateFlow(AuthState.Unauthenticated)
+    val state: StateFlow<AuthState<User>>
+        get() = _state
 
     init {
         getAuthData()
     }
 
     private fun getAuthData() = viewModelScope.launch {
-        uiState = UIState.Loading
-        uiState = getAuthStateUseCase.execute().let { response ->
+        _state.value = AuthState.Loading
+        _state.value = getAuthStateUseCase.execute().let { response ->
             when (response) {
                 is Response.Success -> {
-                    authState = AuthState(response.data == null, response.data ?: User())
-                    UIState.Showing
+                    response.data?.let {
+                        AuthState.Authenticated(it)
+                    } ?: AuthState.Unauthenticated
                 }
-                is Response.Failure -> UIState.Error(response.exception)
+                is Response.Failure -> AuthState.Error(
+                    response.exception.message ?: response.exception.toString()
+                )
             }
         }
     }
 
     fun signIn(email: String, password: String) = viewModelScope.launch {
-            uiState = UIState.Loading
-            uiState = signInUseCase.execute(email, password).let { response ->
+            _state.value = AuthState.Loading
+            _state.value = signInUseCase.execute(email, password).let { response ->
                 when (response) {
                     is Response.Success -> {
-                        if (!response.data) {
-                            AuthState(false, User())
-                        } else withContext(Dispatchers.Main) { getAuthData() } // TODO: return user, not boolean
-                        UIState.Showing
+                        response.data?.let {
+                            AuthState.Authenticated(it)
+                        } ?: AuthState.Unauthenticated
                     }
-                    is Response.Failure -> UIState.Error(response.exception)
+
+                    is Response.Failure -> AuthState.Error(
+                        response.exception.message ?: response.exception.toString()
+                    )
                 }
             }
         }
 
-    fun signOut() {
-        TODO()
+    fun signOut() = viewModelScope.launch {
+        _state.value = AuthState.Loading
+        _state.value = signOutUseCase.execute().let { response ->
+            when (response) {
+                is Response.Success -> AuthState.Unauthenticated
+                is Response.Failure -> AuthState.Error(
+                    response.exception.message ?: response.exception.toString()
+                )
+            }
+        }
     }
 
-    fun register(email: String, password: String) {
-        TODO()
+    fun register(email: String, password: String, username: String) = viewModelScope.launch {
+        _state.value = AuthState.Loading
+        _state.value = registerUseCase.execute(email, password, username).let { response ->
+            when (response) {
+                is Response.Success -> AuthState.Authenticated(response.data)
+
+                is Response.Failure -> AuthState.Error(
+                    response.exception.message ?: response.exception.toString()
+                )
+            }
+        }
     }
-
-
-
-
-
 }
