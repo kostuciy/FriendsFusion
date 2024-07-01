@@ -3,7 +3,7 @@ package com.kostuciy.domain.usecase
 import com.kostuciy.domain.repository.AuthRepository
 import javax.inject.Inject
 
-class RegisterUseCase @Inject constructor(
+class EditUserUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
 
@@ -11,5 +11,5 @@ class RegisterUseCase @Inject constructor(
         email: String,
         password: String,
         username: String
-    ) = repository.signUp(email, password, username)
+    ) = repository.editUser(email, password, username)
 }

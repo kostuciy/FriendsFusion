@@ -8,4 +8,8 @@
     <string name="registration">Регистрация</string>
     <string name="username">Имя пользователя</string>
     <string name="password_confirm">Confirm password</string>
+    <string name="profile_title">Профиль %1$s</string>
+    <string name="apply_changes">Применить изменения</string>
+    <string name="sign_out">Выйти</string>
+    <string name="new_password">Новый пароль</string>
 </resources>

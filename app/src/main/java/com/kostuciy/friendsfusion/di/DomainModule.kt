@@ -2,6 +2,7 @@ package com.kostuciy.friendsfusion.di
 
 import com.kostuciy.data.repository.AuthRepositoryImpl
 import com.kostuciy.domain.repository.AuthRepository
+import com.kostuciy.domain.usecase.EditUserUseCase
 import com.kostuciy.domain.usecase.GetAuthStateUseCase
 import com.kostuciy.domain.usecase.RegisterUseCase
 import com.kostuciy.domain.usecase.SignInUseCase
@@ -48,6 +49,11 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun providesSignOutUseCase(repository: AuthRepository) =
+    fun provideSignOutUseCase(repository: AuthRepository) =
         SignOutUseCase(repository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideEditUserUseCase(repository: AuthRepository) =
+        EditUserUseCase(repository)
 }

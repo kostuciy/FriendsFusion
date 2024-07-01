@@ -1,7 +1,6 @@
 package com.kostuciy.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.userProfileChangeRequest
 import com.kostuciy.domain.model.Response
 import com.kostuciy.domain.model.User
@@ -23,7 +22,7 @@ class AuthRepositoryImpl @Inject constructor(
             Response.Failure(e)
         }
 
-    override suspend fun register(email: String, password: String, username: String): Response<User> =
+    override suspend fun signUp(email: String, password: String, username: String): Response<User> =
         try {
             val user = firebaseAuth
                 .createUserWithEmailAndPassword(email, password)
@@ -33,7 +32,7 @@ class AuthRepositoryImpl @Inject constructor(
                         userProfileChangeRequest {
                             displayName = username
                         }
-                    )
+                    ).await()
 
                     User(it.uid, it.email!!, it.displayName!!)
                 }
@@ -47,7 +46,7 @@ class AuthRepositoryImpl @Inject constructor(
             val user = firebaseAuth.signInWithEmailAndPassword(email, password)
                 .await()
                 .user?.let {
-                    User(it.uid, it.email!!, it.displayName?: "no name") // TODO: remove placeholder
+                    User(it.uid, it.email!!, it.displayName!!)
                 }
             Response.Success(user)
         } catch (e: Exception) {
@@ -62,4 +61,24 @@ class AuthRepositoryImpl @Inject constructor(
             Response.Failure(e)
         }
 
+//    TODO: edit email and password
+    override suspend fun editUser(
+        email: String,
+        password: String,
+        username: String
+    ): Response<User> =
+        try {
+            val user = firebaseAuth.currentUser!!.let {
+                it.updateProfile(
+                    userProfileChangeRequest {
+                        displayName = username
+                    }
+                ).await()
+
+                User(it.uid, it.email!!, it.displayName!!)
+            }
+            Response.Success(user)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
 }

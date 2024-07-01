@@ -6,14 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".presentation.fragments.SignUpFragment">
 
-    <ImageButton
-        android:id="@+id/imageButton"
+    <ToggleButton
+        android:id="@+id/showPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/small"
         android:background="@android:color/transparent"
+        android:button="@drawable/show_password_selector"
+        android:checked="false"
         android:padding="@dimen/small"
-        android:src="@drawable/baseline_visibility_off_24"
+        android:textOff="@null"
+        android:textOn="@null"
+        android:textSize="0sp"
+        android:minWidth="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/password"
         app:layout_constraintStart_toEndOf="@+id/password"
         app:layout_constraintTop_toTopOf="@+id/password" />
@@ -86,5 +91,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/submit"
+        app:layout_constraintStart_toStartOf="@+id/submit"
+        app:layout_constraintTop_toBottomOf="@+id/submit" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Error"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="@+id/title"
+        app:layout_constraintStart_toStartOf="@+id/title"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

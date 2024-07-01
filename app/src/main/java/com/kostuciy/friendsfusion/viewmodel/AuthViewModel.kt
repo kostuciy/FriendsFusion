@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kostuciy.domain.model.Response
 import com.kostuciy.domain.model.User
 import com.kostuciy.domain.model.state.AuthState
+import com.kostuciy.domain.usecase.EditUserUseCase
 import com.kostuciy.domain.usecase.GetAuthStateUseCase
 import com.kostuciy.domain.usecase.RegisterUseCase
 import com.kostuciy.domain.usecase.SignInUseCase
@@ -20,7 +21,8 @@ class AuthViewModel @Inject constructor(
     private val getAuthStateUseCase: GetAuthStateUseCase,
     private val registerUseCase: RegisterUseCase,
     private val signInUseCase: SignInUseCase,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val editUserUseCase: EditUserUseCase
 ) : ViewModel() {
 
     private var _state: MutableStateFlow<AuthState<User>> =
@@ -77,12 +79,24 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun register(email: String, password: String, username: String) = viewModelScope.launch {
+    fun signUp(email: String, password: String, username: String) = viewModelScope.launch {
         _state.value = AuthState.Loading
         _state.value = registerUseCase.execute(email, password, username).let { response ->
             when (response) {
                 is Response.Success -> AuthState.Authenticated(response.data)
 
+                is Response.Failure -> AuthState.Error(
+                    response.exception.message ?: response.exception.toString()
+                )
+            }
+        }
+    }
+
+    fun editUser(email: String, password: String, username: String) = viewModelScope.launch {
+        _state.value = AuthState.Loading
+        _state.value = editUserUseCase.execute(email, password, username).let { response ->
+            when (response) {
+                is Response.Success -> AuthState.Authenticated(response.data)
                 is Response.Failure -> AuthState.Error(
                     response.exception.message ?: response.exception.toString()
                 )

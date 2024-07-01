@@ -1,16 +1,20 @@
 package com.kostuciy.friendsfusion.presentation.fragments
 
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.kostuciy.domain.model.state.AuthState
+import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.databinding.FragmentSignInBinding
 import com.kostuciy.friendsfusion.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +29,11 @@ class SignInFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentSignInBinding.inflate(inflater, container, false)
+        val binding = FragmentSignInBinding.inflate(
+            inflater,
+            container,
+            false
+        )
 
         val navController = findNavController()
 
@@ -35,20 +43,44 @@ class SignInFragment : Fragment() {
                 val password = this.password.text.toString()
                 viewModel.signIn(email, password)
             }
+
+            signUp.setOnClickListener {
+                navController.navigate(R.id.action_signInFragment_to_signUpFragment)
+            }
+            
+            showPassword.setOnCheckedChangeListener { button, isChecked ->
+                password.transformationMethod =
+                    if (isChecked) HideReturnsTransformationMethod.getInstance()
+                    else PasswordTransformationMethod.getInstance()
+            }
+
         }
 
-//        TODO: redo after testing
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
-                    binding.testTextView.text = when (state) {
-                        is AuthState.Authenticated -> "Auth: ${state.user.username}"
-                        is AuthState.Error -> "Error: ${state.message}"
-                        AuthState.Loading -> "Loading..."
-                        AuthState.Unauthenticated -> "Unauth"
-                    }                    }
+                    when (state) {
+                        is AuthState.Authenticated -> navController.navigate(
+                            R.id.action_signInFragment_to_profileFragment
+                        )
+                        is AuthState.Error -> with(binding) {
+                            this.error.isVisible = true
+                            this.error.text = state.message
+                            progressBar.isVisible = false
+                            submit.isEnabled = true
+                        }
+                        AuthState.Loading -> with(binding) {
+                            progressBar.isVisible = true
+                            submit.isEnabled = false
+                        }
+                        AuthState.Unauthenticated -> with(binding) {
+                            progressBar.isVisible = false
+                            submit.isEnabled = true
+                        }
+                    }
                 }
             }
+        }
 
 
 
