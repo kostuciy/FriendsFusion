@@ -7,14 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.kostuciy.domain.model.state.AuthState
-import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.databinding.FragmentSignUpBinding
+import com.kostuciy.friendsfusion.utils.AppUtils
 import com.kostuciy.friendsfusion.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,13 +34,16 @@ class SignUpFragment : Fragment() {
 
         with(binding) {
             submit.setOnClickListener {
-                val email = this.email.text.toString()
-                val password = this.password.text.toString()
-                val passwordConfirmation = this.passwordConfirm.text.toString()
-                val username = this.username.text.toString()
+                AppUtils.hideKeyboard(activity)
+
+                val email = email.text.toString()
+                val password = password.text.toString()
+                val passwordConfirmation = passwordConfirm.text.toString()
+                val username = username.text.toString()
 
                 if (passwordConfirmation == password)
                     viewModel.signUp(email, password, username)
+                else passwordConfirm.text.clear()
             }
 
             showPassword.setOnCheckedChangeListener { button, isChecked ->
@@ -55,9 +59,21 @@ class SignUpFragment : Fragment() {
                 viewModel.state.collect { state ->
                     when (state) {
                         is AuthState.Authenticated -> navController.popBackStack()
-                        is AuthState.Error -> "Error: ${state.message}"
-                        AuthState.Loading -> "Loading..."
-                        AuthState.Unauthenticated ->  "Unauth"
+                        is AuthState.Error -> with(binding) {
+                            error.isVisible = true
+                            error.text = state.message
+                            progressBar.isVisible = false
+                            submit.isEnabled = true
+                        }
+                        AuthState.Loading -> with(binding) {
+                            progressBar.isVisible = true
+                            submit.isEnabled = false
+                            error.isVisible = false
+                        }
+                        AuthState.Unauthenticated -> with(binding) {
+                            progressBar.isVisible = false
+                            submit.isEnabled = true
+                        }
                     }
                 }
             }

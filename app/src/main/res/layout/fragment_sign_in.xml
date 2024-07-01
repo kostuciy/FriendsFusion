@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:visibility="visible"
     tools:context=".presentation.fragments.SignInFragment">
 
     <ToggleButton
@@ -14,11 +15,11 @@
         android:background="@android:color/transparent"
         android:button="@drawable/show_password_selector"
         android:checked="false"
+        android:minWidth="0dp"
         android:padding="@dimen/small"
         android:textOff="@null"
         android:textOn="@null"
         android:textSize="0sp"
-        android:minWidth="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/password"
         app:layout_constraintStart_toEndOf="@+id/password"
         app:layout_constraintTop_toTopOf="@+id/password" />
@@ -40,6 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/large"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
@@ -95,11 +97,16 @@
         android:id="@+id/error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Error"
+        android:paddingHorizontal="@dimen/small"
+        android:layout_marginTop="@dimen/large"
+        android:textColor="@color/md_theme_error"
+        android:textSize="@dimen/body"
+        android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/title"
-        app:layout_constraintEnd_toEndOf="@+id/title"
-        app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/submit"
+        app:layout_constraintStart_toStartOf="@+id/signUp"
+        app:layout_constraintTop_toBottomOf="@+id/submit"
+        tools:text="Error" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

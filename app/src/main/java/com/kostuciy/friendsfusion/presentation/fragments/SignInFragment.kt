@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.kostuciy.domain.model.state.AuthState
 import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.databinding.FragmentSignInBinding
+import com.kostuciy.friendsfusion.utils.AppUtils
 import com.kostuciy.friendsfusion.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,6 +40,8 @@ class SignInFragment : Fragment() {
 
         with(binding) {
             submit.setOnClickListener {
+                AppUtils.hideKeyboard(activity)
+
                 val email = this.email.text.toString()
                 val password = this.password.text.toString()
                 viewModel.signIn(email, password)
@@ -48,7 +51,7 @@ class SignInFragment : Fragment() {
                 navController.navigate(R.id.action_signInFragment_to_signUpFragment)
             }
             
-            showPassword.setOnCheckedChangeListener { button, isChecked ->
+            showPassword.setOnCheckedChangeListener { _, isChecked ->
                 password.transformationMethod =
                     if (isChecked) HideReturnsTransformationMethod.getInstance()
                     else PasswordTransformationMethod.getInstance()
@@ -64,14 +67,15 @@ class SignInFragment : Fragment() {
                             R.id.action_signInFragment_to_profileFragment
                         )
                         is AuthState.Error -> with(binding) {
-                            this.error.isVisible = true
-                            this.error.text = state.message
+                            error.isVisible = true
+                            error.text = state.message
                             progressBar.isVisible = false
                             submit.isEnabled = true
                         }
                         AuthState.Loading -> with(binding) {
                             progressBar.isVisible = true
                             submit.isEnabled = false
+                            error.isVisible = false
                         }
                         AuthState.Unauthenticated -> with(binding) {
                             progressBar.isVisible = false

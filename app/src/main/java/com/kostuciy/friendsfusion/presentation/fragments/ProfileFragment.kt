@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.kostuciy.domain.model.state.AuthState
 import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.databinding.FragmentProfileBinding
+import com.kostuciy.friendsfusion.utils.AppUtils
 import com.kostuciy.friendsfusion.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,6 +40,8 @@ class ProfileFragment : Fragment() {
             }
 
             submitChanges.setOnClickListener {
+                AppUtils.hideKeyboard(activity)
+
                 val email = email.text.toString()
                 val password = password.text.toString()
                 val username = username.text.toString()

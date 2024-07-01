@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/username"
         android:inputType="text"
@@ -53,7 +54,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/large"
+        android:padding="@dimen/small"
         android:text="@string/profile_title"
+        android:textAlignment="center"
         android:textSize="@dimen/title"
         app:layout_constraintBottom_toTopOf="@+id/username"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,9 +68,10 @@
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/email"
-        android:inputType="text"
+        android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="@+id/username"
         app:layout_constraintStart_toStartOf="@+id/username"
@@ -83,16 +87,22 @@
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="@+id/email"
         app:layout_constraintStart_toStartOf="@+id/email"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        tools:ignore="TextFields" />
 
     <TextView
         android:id="@+id/error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium"
-        tools:text="Error"
+        android:layout_marginHorizontal="@dimen/small"
+        android:layout_marginTop="@dimen/large"
+        android:textColor="@color/md_theme_error"
+        android:textSize="@dimen/body"
+        android:textStyle="bold"
+        android:textAlignment="center"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/profileTitle"
-        app:layout_constraintStart_toStartOf="@+id/profileTitle"
-        app:layout_constraintTop_toBottomOf="@+id/profileTitle" />
+        app:layout_constraintEnd_toEndOf="@+id/password"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        tools:text="Error" />
 </androidx.constraintlayout.widget.ConstraintLayout>
