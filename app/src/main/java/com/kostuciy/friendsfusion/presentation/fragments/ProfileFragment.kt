@@ -54,10 +54,12 @@ class ProfileFragment : Fragment() {
                 viewModel.state.collect { state ->
                     when (state) {
                         is AuthState.Authenticated -> updateViews(binding, state)
-                        is AuthState.Error -> with(binding.error) {
-                            this.text = state.message
-                            this.isVisible = true
-                            binding.progressBar.isVisible = false
+                        is AuthState.Error -> with(binding) {
+                            error.text = state.message
+                            error.isVisible = true
+                            progressBar.isVisible = false
+                            submitChanges.isEnabled = true
+                            signOut.isEnabled = true
                         }
                         AuthState.Loading -> with(binding) {
                             this.submitChanges.isEnabled = false

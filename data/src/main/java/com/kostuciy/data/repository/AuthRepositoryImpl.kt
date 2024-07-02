@@ -5,7 +5,9 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.kostuciy.domain.model.Response
 import com.kostuciy.domain.model.User
 import com.kostuciy.domain.repository.AuthRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +24,11 @@ class AuthRepositoryImpl @Inject constructor(
             Response.Failure(e)
         }
 
-    override suspend fun signUp(email: String, password: String, username: String): Response<User> =
+    override suspend fun signUp(
+        email: String,
+        password: String,
+        username: String
+    ): Response<User> =
         try {
             val user = firebaseAuth
                 .createUserWithEmailAndPassword(email, password)
@@ -61,7 +67,7 @@ class AuthRepositoryImpl @Inject constructor(
             Response.Failure(e)
         }
 
-//    TODO: edit email and password
+//    TODO: redo email editing
     override suspend fun editUser(
         email: String,
         password: String,
@@ -69,12 +75,13 @@ class AuthRepositoryImpl @Inject constructor(
     ): Response<User> =
         try {
             val user = firebaseAuth.currentUser!!.let {
-                it.updateProfile(
-                    userProfileChangeRequest {
-                        displayName = username
-                    }
+                if (it.displayName != username) it.updateProfile(
+                    userProfileChangeRequest { displayName = username }
                 ).await()
 
+                if (it.email != email) it.updateEmail(email).await()
+
+                if (password.isNotBlank()) it.updatePassword(password).await()
                 User(it.uid, it.email!!, it.displayName!!)
             }
             Response.Success(user)
