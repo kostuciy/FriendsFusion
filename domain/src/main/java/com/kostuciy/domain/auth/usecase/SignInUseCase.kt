@@ -1,6 +1,6 @@
-package com.kostuciy.domain.usecase
+package com.kostuciy.domain.auth.usecase
 
-import com.kostuciy.domain.repository.AuthRepository
+import com.kostuciy.domain.auth.repository.AuthRepository
 import javax.inject.Inject
 
 class SignInUseCase @Inject constructor(

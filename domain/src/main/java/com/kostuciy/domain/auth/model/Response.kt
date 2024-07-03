@@ -1,4 +1,4 @@
-package com.kostuciy.domain.model
+package com.kostuciy.domain.auth.model
 
 sealed class Response<out T> {
 //    data object Loading: Response<Nothing>() TODO: check if needed

@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.firebase.auth)
     implementation(project(":domain"))
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,6 +59,10 @@ dependencies {
 //    Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.auth)
+
+//    VK
+    implementation(libs.vk.sdk.core)
+    implementation(libs.vk.sdk.api)
 }
 
 kapt {

@@ -13,7 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.kostuciy.domain.model.state.AuthState
+import com.kostuciy.domain.auth.model.AuthState
 import com.kostuciy.friendsfusion.databinding.FragmentSignUpBinding
 import com.kostuciy.friendsfusion.utils.AppUtils
 import com.kostuciy.friendsfusion.viewmodel.AuthViewModel

@@ -13,21 +13,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/apply_changes"
+        app:layout_constraintBottom_toBottomOf="@+id/signOut"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/signOut" />
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small"
+        android:layout_marginVertical="@dimen/small"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/username"
         android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/email"
+        app:layout_constraintStart_toStartOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/base" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -46,42 +47,42 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_out"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/submitChanges"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/profileTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/large"
+        android:layout_marginTop="@dimen/small"
         android:padding="@dimen/small"
         android:text="@string/profile_title"
         android:textAlignment="center"
         android:textSize="@dimen/title"
-        app:layout_constraintBottom_toTopOf="@+id/username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/avatar"
+        app:layout_constraintTop_toBottomOf="@+id/avatar"
         tools:text="Profile of kostuciy" />
 
     <EditText
         android:id="@+id/email"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/large"
+        android:layout_marginTop="@dimen/small"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
-        app:layout_constraintEnd_toEndOf="@+id/username"
-        app:layout_constraintStart_toStartOf="@+id/username"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <EditText
         android:id="@+id/password"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/large"
+        android:layout_marginTop="@dimen/small"
         android:ems="10"
         android:hint="@string/new_password"
         android:inputType="text"
@@ -96,13 +97,74 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/small"
         android:layout_marginTop="@dimen/large"
+        android:textAlignment="center"
         android:textColor="@color/md_theme_error"
         android:textSize="@dimen/body"
         android:textStyle="bold"
-        android:textAlignment="center"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/password"
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/password"
         tools:text="Error" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="@dimen/small"
+        android:layout_marginVertical="@dimen/small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/base"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/small"
+        android:layout_marginVertical="@dimen/medium"
+        android:text="@string/base_info"
+        android:textSize="@dimen/body"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileTitle" />
+
+    <TextView
+        android:id="@+id/messengers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/small"
+        android:layout_marginVertical="@dimen/medium"
+        android:scrollbarSize="@dimen/body"
+        android:text="@string/messengers"
+        android:textSize="@dimen/body"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
+
+    <Button
+        android:id="@+id/vkAuthenticate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/small"
+        android:text="@string/login"
+        app:layout_constraintEnd_toEndOf="@+id/password"
+        app:layout_constraintStart_toEndOf="@+id/vkMessanger"
+        app:layout_constraintTop_toBottomOf="@+id/messengers" />
+
+    <TextView
+        android:id="@+id/vkMessanger"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/small"
+        android:gravity="center"
+        android:text="@string/vk_messenger"
+        android:textSize="@dimen/body"
+        app:layout_constraintBottom_toBottomOf="@+id/vkAuthenticate"
+        app:layout_constraintEnd_toStartOf="@+id/vkAuthenticate"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toTopOf="@+id/vkAuthenticate" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

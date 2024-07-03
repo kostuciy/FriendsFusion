@@ -1,15 +1,22 @@
 package com.kostuciy.friendsfusion.viewmodel
 
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kostuciy.domain.model.Response
-import com.kostuciy.domain.model.User
-import com.kostuciy.domain.model.state.AuthState
-import com.kostuciy.domain.usecase.EditUserUseCase
-import com.kostuciy.domain.usecase.GetAuthStateUseCase
-import com.kostuciy.domain.usecase.RegisterUseCase
-import com.kostuciy.domain.usecase.SignInUseCase
-import com.kostuciy.domain.usecase.SignOutUseCase
+import com.kostuciy.domain.auth.model.Response
+import com.kostuciy.domain.auth.model.User
+import com.kostuciy.domain.auth.model.AuthState
+import com.kostuciy.domain.auth.usecase.EditUserUseCase
+import com.kostuciy.domain.auth.usecase.GetAuthStateUseCase
+import com.kostuciy.domain.auth.usecase.RegisterUseCase
+import com.kostuciy.domain.auth.usecase.SaveVKTokenToFirestoreUseCase
+import com.kostuciy.domain.auth.usecase.SignInUseCase
+import com.kostuciy.domain.auth.usecase.SignOutUseCase
+import com.kostuciy.domain.vk.model.VKUserToken
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.auth.VKAuthenticationResult
+import com.vk.api.sdk.auth.VKScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +29,8 @@ class AuthViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase,
     private val signInUseCase: SignInUseCase,
     private val signOutUseCase: SignOutUseCase,
-    private val editUserUseCase: EditUserUseCase
+    private val editUserUseCase: EditUserUseCase,
+    private val saveVKTokenToFirestoreUseCase: SaveVKTokenToFirestoreUseCase
 ) : ViewModel() {
 
     private var _state: MutableStateFlow<AuthState<User>> =
@@ -103,4 +111,43 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    var vkAuthResultLauncher: ActivityResultLauncher<Collection<VKScope>>? = null
+        private set
+
+    fun setVkAuthResultLauncher(activity: ComponentActivity?) {
+        if (vkAuthResultLauncher != null || activity == null) return
+
+        vkAuthResultLauncher = VK.login(activity) { result ->
+            when (result) {
+                is VKAuthenticationResult.Success -> {
+                    with(result.token) {
+                        val vkUserToken =
+                            VKUserToken(userId.value, accessToken, phone ?: email)
+                        saveVKTokenToFirestore(vkUserToken)
+                    }
+                }
+
+                is VKAuthenticationResult.Failed -> {
+                    AuthState.Error(
+                        result.exception.message ?: result.exception.toString()
+                    )
+                }
+            }
+        }
+    }
+
+    private fun saveVKTokenToFirestore(vkUserToken: VKUserToken) = viewModelScope.launch {
+        _state.value = AuthState.Loading
+        _state.value = saveVKTokenToFirestoreUseCase.execute(vkUserToken).let { response ->
+            when (response) {
+                is Response.Success -> AuthState.Authenticated(response.data)
+                is Response.Failure -> AuthState.Error(
+                    response.exception.message ?: response.exception.toString()
+                )
+            }
+        }
+    }
+
+
 }

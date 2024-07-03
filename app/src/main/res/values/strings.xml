@@ -17,5 +17,9 @@
     <string name="events">Events</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="base_info">Base info</string>
+    <string name="messengers">Messengers</string>
+    <string name="vk_messenger">VKontakte</string>
+    <integer name="com_vk_sdk_AppId" translatable="false">51984160</integer>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

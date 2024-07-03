@@ -16,4 +16,7 @@
     <string name="chat">Чат</string>
     <string name="gallery">Галлерея</string>
     <string name="events">События</string>
+    <string name="base_info">Основная информация</string>
+    <string name="messengers">Мессенджеры</string>
+    <string name="vk_messenger">Вконтакте</string>
 </resources>

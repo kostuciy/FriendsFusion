@@ -1,12 +1,13 @@
 package com.kostuciy.friendsfusion.di
 
-import com.kostuciy.data.repository.AuthRepositoryImpl
-import com.kostuciy.domain.repository.AuthRepository
-import com.kostuciy.domain.usecase.EditUserUseCase
-import com.kostuciy.domain.usecase.GetAuthStateUseCase
-import com.kostuciy.domain.usecase.RegisterUseCase
-import com.kostuciy.domain.usecase.SignInUseCase
-import com.kostuciy.domain.usecase.SignOutUseCase
+import com.kostuciy.data.auth.repository.AuthRepositoryImpl
+import com.kostuciy.domain.auth.repository.AuthRepository
+import com.kostuciy.domain.auth.usecase.EditUserUseCase
+import com.kostuciy.domain.auth.usecase.GetAuthStateUseCase
+import com.kostuciy.domain.auth.usecase.RegisterUseCase
+import com.kostuciy.domain.auth.usecase.SaveVKTokenToFirestoreUseCase
+import com.kostuciy.domain.auth.usecase.SignInUseCase
+import com.kostuciy.domain.auth.usecase.SignOutUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -56,4 +57,9 @@ object UseCaseModule {
     @ViewModelScoped
     fun provideEditUserUseCase(repository: AuthRepository) =
         EditUserUseCase(repository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideSaveVKTokenToFirestoreUseCase(repository: AuthRepository) =
+        SaveVKTokenToFirestoreUseCase(repository)
 }

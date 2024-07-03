@@ -1,6 +1,4 @@
-package com.kostuciy.domain.model.state
-
-import com.kostuciy.domain.model.User
+package com.kostuciy.domain.auth.model
 
 sealed class AuthState<out T> {
     data object Loading : AuthState<Nothing>()

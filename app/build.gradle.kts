@@ -46,15 +46,16 @@ android {
 dependencies {
 
 //    Base
-    implementation(libs.androidx.core.ktx)
-    testImplementation(libs.junit)
+    implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.firebase.firestore)
+    testImplementation(libs.junit)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.auth)
-    implementation(project(":domain"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
@@ -66,6 +67,10 @@ dependencies {
 //    DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+//    VK
+    implementation(libs.vk.sdk.core)
+    implementation(libs.vk.sdk.api)
 
 //    UI
     implementation(libs.androidx.navigation.fragment.ktx)

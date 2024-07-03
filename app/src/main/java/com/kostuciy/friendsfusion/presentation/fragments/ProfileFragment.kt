@@ -1,5 +1,6 @@
 package com.kostuciy.friendsfusion.presentation.fragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,11 +12,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.kostuciy.domain.model.state.AuthState
+import com.kostuciy.domain.auth.model.AuthState
 import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.databinding.FragmentProfileBinding
 import com.kostuciy.friendsfusion.utils.AppUtils
 import com.kostuciy.friendsfusion.viewmodel.AuthViewModel
+import com.vk.api.sdk.VK
+import com.vk.api.sdk.auth.VKScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,7 +30,6 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val binding = FragmentProfileBinding.inflate(
             inflater,
             container,
@@ -46,6 +48,12 @@ class ProfileFragment : Fragment() {
                 val password = password.text.toString()
                 val username = username.text.toString()
                 viewModel.editUser(email, password, username)
+            }
+
+            vkAuthenticate.setOnClickListener {
+                viewModel.vkAuthResultLauncher?.launch(
+                    arrayListOf(VKScope.WALL, VKScope.PHOTOS) // TODO: check if needs to be in view model
+                )
             }
         }
 
@@ -74,14 +82,17 @@ class ProfileFragment : Fragment() {
             }
         }
 
+
+
         return binding.root
     }
 
     private fun updateViews(binding: FragmentProfileBinding, state: AuthState.Authenticated) {
         with(binding) {
+            vkAuthenticate.isEnabled = state.user.vkUserToken == null  // TODO: remove test
             progressBar.isVisible = false
-            this.submitChanges.isEnabled = true
-            this.signOut.isEnabled = true
+            submitChanges.isEnabled = true
+            signOut.isEnabled = true
             error.isVisible = false
             profileTitle.text = getString(
                 R.string.profile_title, state.user.username
@@ -91,3 +102,4 @@ class ProfileFragment : Fragment() {
         }
     }
 }
+
