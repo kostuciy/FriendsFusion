@@ -42,12 +42,14 @@ android {
 
 dependencies {
 
+//    Base
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.firebase.auth)
     implementation(project(":domain"))
     implementation(libs.firebase.firestore)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,6 +65,12 @@ dependencies {
 //    VK
     implementation(libs.vk.sdk.core)
     implementation(libs.vk.sdk.api)
+
+//    DB
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 }
 
 kapt {

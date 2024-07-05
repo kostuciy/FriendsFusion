@@ -3,7 +3,8 @@ package com.kostuciy.friendsfusion.di
 import com.kostuciy.data.auth.repository.AuthRepositoryImpl
 import com.kostuciy.domain.auth.repository.AuthRepository
 import com.kostuciy.domain.auth.usecase.EditUserUseCase
-import com.kostuciy.domain.auth.usecase.GetAuthStateUseCase
+import com.kostuciy.domain.auth.usecase.GetAuthDataUseCase
+import com.kostuciy.domain.auth.usecase.UpdateAuthDataUseCase
 import com.kostuciy.domain.auth.usecase.RegisterUseCase
 import com.kostuciy.domain.auth.usecase.SaveVKTokenToFirestoreUseCase
 import com.kostuciy.domain.auth.usecase.SignInUseCase
@@ -35,8 +36,13 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideGetAuthUseCase(repository: AuthRepository) =
-        GetAuthStateUseCase(repository)
+    fun provideGetAuthDataUseCase(repository: AuthRepository) =
+        GetAuthDataUseCase(repository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideUpdateAuthDataUseCase(repository: AuthRepository) =
+        UpdateAuthDataUseCase(repository)
 
     @Provides
     @ViewModelScoped
@@ -60,6 +66,6 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideSaveVKTokenToFirestoreUseCase(repository: AuthRepository) =
+    fun provideSaveVKTokenUseCase(repository: AuthRepository) =
         SaveVKTokenToFirestoreUseCase(repository)
 }

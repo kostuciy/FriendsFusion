@@ -1,7 +1,6 @@
-package com.kostuciy.domain.auth.model
+package com.kostuciy.domain.core.model
 
 sealed class Response<out T> {
-//    data object Loading: Response<Nothing>() TODO: check if needed
 
     data class Success<out T>(
         val data: T

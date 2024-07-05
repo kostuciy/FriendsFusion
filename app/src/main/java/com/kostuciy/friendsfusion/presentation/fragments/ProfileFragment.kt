@@ -1,6 +1,5 @@
 package com.kostuciy.friendsfusion.presentation.fragments
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +16,6 @@ import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.databinding.FragmentProfileBinding
 import com.kostuciy.friendsfusion.utils.AppUtils
 import com.kostuciy.friendsfusion.viewmodel.AuthViewModel
-import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -89,7 +87,7 @@ class ProfileFragment : Fragment() {
 
     private fun updateViews(binding: FragmentProfileBinding, state: AuthState.Authenticated) {
         with(binding) {
-            vkAuthenticate.isEnabled = state.user.vkUserToken == null  // TODO: remove test
+            vkAuthenticate.isEnabled = state.user.profile!!.tokens.isEmpty()  // TODO: remove test
             progressBar.isVisible = false
             submitChanges.isEnabled = true
             signOut.isEnabled = true
@@ -98,7 +96,7 @@ class ProfileFragment : Fragment() {
                 R.string.profile_title, state.user.username
             )
             username.setText(state.user.username)
-            email.setText(state.user.email)
+            email.setText(state.user.profile!!.email)
         }
     }
 }
