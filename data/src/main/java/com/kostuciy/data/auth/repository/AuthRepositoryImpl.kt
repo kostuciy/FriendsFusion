@@ -1,6 +1,8 @@
 package com.kostuciy.data.auth.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kostuciy.data.core.db.dao.AuthDao
@@ -15,7 +17,11 @@ import com.kostuciy.domain.core.model.MessengerUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,17 +38,16 @@ class AuthRepositoryImpl @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore,
     private val dao: AuthDao
 ) : AuthRepository {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val authData: Flow<User?> = dao.getCurrentUser().flatMapMerge { userWithMessengers ->
-        dao.getTokens().map { tokenEntities ->
-            userWithMessengers?.let {
-                val tokens = tokenEntities.map { it.toModel() }
+    override val authData: Flow<User?> = dao.getCurrentUserFlow().zip(
+        dao.getTokensFlow()
+    ) { userWithMessengers, tokenEntities ->
+        userWithMessengers?.let {
+            val tokens = tokenEntities.map { it.toModel() }
                 val profile = UserProfile(it.user.email!!, tokens)
                 val linkedMessengerUsers = it.linkedMessengerUsers
                     .map { it.toModel() }
 
                 User(it.user.id, it.user.username, it.user.avatarUrl, linkedMessengerUsers, profile)
-            }
         }
     }
 
@@ -50,20 +55,28 @@ class AuthRepositoryImpl @Inject constructor(
     //    adds user and its profile data to bd
     override suspend fun updateAuthData(): Response<Boolean> {
         try {
-            val user = firebaseAuth.currentUser ?: return Response.Success(false)
+            val user = firebaseAuth.currentUser
 
-            val linkedUsers = getMessengerUsers()
+            if (user == null) {
+                signOut()
+                return Response.Success(false)
+            }
+
+//            tokens get inserted from shared prefs each time
             val tokens = getTokens()
-            val profile = UserProfile(user.email!!, tokens)
+            dao.insertTokens(tokens.map { it.toEntity() })
+
+//            user and user profile are readded to db only when firebase and local user
+//            are not equal
+            val localUser = dao.getCurrentUser()?.user
+            if (compareLocalAndFirebaseUser(user, localUser)) return Response.Success(true)
 
             dao.insertUser(
                 UserEntity(
                     user.uid, user.displayName!!, user.photoUrl?.toString(),
-                    profile.email, true
+                    user.email!!, true
                 )
             )
-            dao.insertTokens(tokens.map { it.toEntity() })
-            dao.insertMessengers(linkedUsers.map { it.toEntity(user.uid) })
 
             return Response.Success(true)
         } catch (e: Exception) {
@@ -144,28 +157,28 @@ class AuthRepositoryImpl @Inject constructor(
         password: String,
         username: String
     ): Response<Boolean> {
-    try {
-        val user = firebaseAuth.currentUser!!
+        try {
+            val user = firebaseAuth.currentUser!!
 
-        if (user.displayName != username) user.updateProfile(
-            userProfileChangeRequest { displayName = username }
-        ).await()
+            if (user.displayName != username) user.updateProfile(
+                userProfileChangeRequest { displayName = username }
+            ).await()
 
-        if (user.email != email) user.updateEmail(email).await()
+            if (user.email != email) user.updateEmail(email).await()
 
-        if (password.isNotBlank()) user.updatePassword(password).await()
+            if (password.isNotBlank()) user.updatePassword(password).await()
 
-        dao.insertUser(
-            UserEntity(
-                user.uid, user.displayName!!, user.photoUrl?.toString(),
-                user.email, true
+            dao.insertUser(
+                UserEntity(
+                    user.uid, user.displayName!!, user.photoUrl?.toString(),
+                    user.email, true
+                )
             )
-        )
 
-        return Response.Success(true)
-    } catch (e: Exception) {
-        return Response.Failure(e)
-    }
+            return Response.Success(true)
+        } catch (e: Exception) {
+            return Response.Failure(e)
+        }
 }
 
 //    TODO: redo tokens in general
@@ -220,5 +233,10 @@ class AuthRepositoryImpl @Inject constructor(
         return emptyList()
 
     }
+
+    private fun compareLocalAndFirebaseUser(
+        firebaseUser: FirebaseUser,
+        localUser: UserEntity?
+    ) = localUser?.id == firebaseUser.uid
 
 }

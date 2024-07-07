@@ -1,7 +1,6 @@
 package com.kostuciy.data.core.db.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,10 +16,14 @@ interface AuthDao {
 
     @Transaction
     @Query("SELECT * FROM users WHERE isCurrentUser=1")
-    fun getCurrentUser(): Flow<UserWithMessengers?>
+    fun getCurrentUserFlow(): Flow<UserWithMessengers?>
+
+    @Transaction
+    @Query("SELECT * FROM users WHERE isCurrentUser=1")
+    suspend fun getCurrentUser(): UserWithMessengers?
 
     @Query("SELECT * FROM tokens")
-    fun getTokens(): Flow<List<TokenEntity>>
+    fun getTokensFlow(): Flow<List<TokenEntity>>
 
     //    TODO: implememnt for chats
 //    @Transaction

@@ -1,5 +1,6 @@
 package com.kostuciy.friendsfusion.viewmodel
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
@@ -19,9 +20,11 @@ import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKAuthenticationResult
 import com.vk.api.sdk.auth.VKScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,15 +47,29 @@ class AuthViewModel @Inject constructor(
     private fun changeState(loading: Boolean = false, exception: Exception? = null) {
         viewModelScope.launch {
             val data: Flow<User?> = getAuthDataUseCase.execute()
-            data.collect { user ->
+            _state.value = AuthState.Loading
+            delay(500) // TODO: find better solution later
+            data.collectLatest { user ->
+                Log.d("kakapupu", "${user}")
                 _state.value = when {
-                    loading -> AuthState.Loading
-                    user != null -> AuthState.Authenticated(user)
-                    exception != null -> AuthState.Error(
-                        exception.message ?: exception.toString()
-                    )
-
-                    else -> AuthState.Unauthenticated
+                    loading -> {
+                        Log.d("kakapupu", "toLoading()")
+                        AuthState.Loading
+                    }
+                    user != null -> {
+                        Log.d("kakapupu", "toAuth()")
+                        AuthState.Authenticated(user)
+                    }
+                    exception != null -> {
+                        Log.d("kakapupu", "toError()")
+                        AuthState.Error(
+                            exception.message ?: exception.toString()
+                        )
+                    }
+                    else -> {
+                        Log.d("kakapupu", "toUnauth")
+                        AuthState.Unauthenticated
+                    }
                 }
             }
         }
@@ -64,14 +81,19 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun getAuthData() = viewModelScope.launch {
+        Log.d("kakapupu", "getAuthData()")
         changeState(loading = true)
+        Log.d("kakapupu", "getAuthData() Loading")
         val exception = updateAuthDataUseCase.execute().let {
             if (it is Response.Failure) it.exception else null
         }
         changeState(exception = exception)
+
+        Log.d("kakapupu", "getAuthData() Finished")
     }
 
     fun signIn(email: String, password: String) = viewModelScope.launch {
+        Log.d("kakapupu", "signIn")
         changeState(loading = true)
         val exception = signInUseCase.execute(email, password).let {
             if (it is Response.Failure) it.exception else null
@@ -80,6 +102,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signOut() = viewModelScope.launch {
+        Log.d("kakapupu", "signOut")
         changeState(loading = true)
         val exception = signOutUseCase.execute().let {
             if (it is Response.Failure) it.exception else null
@@ -88,6 +111,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signUp(email: String, password: String, username: String) = viewModelScope.launch {
+        Log.d("kakapupu", "signUp")
         changeState(loading = true)
         val exception = registerUseCase.execute(email, password, username).let {
             if (it is Response.Failure) it.exception else null
@@ -96,11 +120,13 @@ class AuthViewModel @Inject constructor(
     }
 
     fun editUser(email: String, password: String, username: String) = viewModelScope.launch {
+        Log.d("kakapupu", "editUser")
         changeState(loading = true)
         val exception = editUserUseCase.execute(email, password, username).let {
             if (it is Response.Failure) it.exception else null
         }
         changeState(exception = exception)
+        Log.d("kakapupu", "editing finished")
     }
 
     var vkAuthResultLauncher: ActivityResultLauncher<Collection<VKScope>>? = null
