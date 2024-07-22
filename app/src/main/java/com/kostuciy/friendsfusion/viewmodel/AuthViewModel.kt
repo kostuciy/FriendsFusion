@@ -19,6 +19,7 @@ import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKAuthenticationResult
 import com.vk.api.sdk.auth.VKScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,29 +47,30 @@ class AuthViewModel
 
         private suspend fun setState(result: Flow<Result<Boolean>>) {
             result.collect {
-                _state.value =
-                    when (it) {
-                        is Result.Error -> {
+                when (it) {
+                    is Result.Error ->
+                        _state.value =
                             AuthState.Error(
                                 it.exception.message ?: it.exception.toString(),
                             )
-                        }
 
-                        is Result.Loading -> {
+                    is Result.Loading ->
+                        _state.value =
                             AuthState.Loading
-                        }
 
-                        is Result.Success -> return@collect
-                    }
-            }
-            delay(250)
-            getAuthDataUseCase.execute().collectLatest { user ->
-                _state.value =
-                    if (user == null) {
-                        AuthState.Unauthenticated
-                    } else {
-                        AuthState.Authenticated(user)
-                    }
+                    is Result.Success ->
+                        coroutineScope {
+                            delay(250)
+                            getAuthDataUseCase.execute().collectLatest { user ->
+                                _state.value =
+                                    if (user == null) {
+                                        AuthState.Unauthenticated
+                                    } else {
+                                        AuthState.Authenticated(user)
+                                    }
+                            }
+                        }
+                }
             }
         }
 
