@@ -2,16 +2,15 @@ package com.kostuciy.data.core.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kostuciy.domain.core.model.MessengerUser
+import com.kostuciy.domain.auth.model.MessengerUser
 
 @Entity(tableName = "users_messengers")
 data class MessengerUserEntity(
     @PrimaryKey val id: Long,
     val userId: String? = null,
     val name: String,
-    val type: MessengerType
+    val type: MessengerType,
 ) {
-
     fun toModel(): MessengerUser =
         when (this.type) {
             MessengerType.VK -> MessengerUser.VKUser(id, name)
