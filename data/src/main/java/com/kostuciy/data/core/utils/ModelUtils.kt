@@ -1,12 +1,12 @@
 package com.kostuciy.data.core.utils
 
-import com.kostuciy.data.core.db.entity.MessengerType
-import com.kostuciy.data.core.db.entity.MessengerUserEntity
-import com.kostuciy.data.core.db.entity.TokenEntity
-import com.kostuciy.data.core.db.entity.UserEntity
-import com.kostuciy.domain.auth.model.MessengerUser
-import com.kostuciy.domain.auth.model.Token
-import com.kostuciy.domain.auth.model.User
+import com.kostuciy.data.profile.entity.MessengerType
+import com.kostuciy.data.profile.entity.MessengerUserEntity
+import com.kostuciy.data.profile.entity.TokenEntity
+import com.kostuciy.data.profile.entity.UserEntity
+import com.kostuciy.domain.profile.model.MessengerUser
+import com.kostuciy.domain.profile.model.Token
+import com.kostuciy.domain.profile.model.User
 
 object ModelUtils {
     fun MessengerUser.toEntity(userId: String? = null) =

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.kostuciy.friendsfusion.presentation.fragments.SignInFragment"
+        android:name="com.kostuciy.friendsfusion.auth.presentation.SignInFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_sign_in" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.kostuciy.friendsfusion.presentation.fragments.SignUpFragment"
+        android:name="com.kostuciy.friendsfusion.auth.presentation.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.kostuciy.friendsfusion.presentation.fragments.ProfileFragment"
+        android:name="com.kostuciy.friendsfusion.profile.presentation.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -37,17 +37,17 @@
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.kostuciy.friendsfusion.presentation.fragments.ChatFragment"
+        android:name="com.kostuciy.friendsfusion.chat.presentation.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
     <fragment
         android:id="@+id/eventFragment"
-        android:name="com.kostuciy.friendsfusion.presentation.fragments.EventFragment"
+        android:name="com.kostuciy.friendsfusion.event.presentation.EventFragment"
         android:label="fragment_event"
         tools:layout="@layout/fragment_event" />
     <fragment
         android:id="@+id/galleryFragment"
-        android:name="com.kostuciy.friendsfusion.presentation.fragments.GalleryFragment"
+        android:name="com.kostuciy.friendsfusion.gallery.presentation.GalleryFragment"
         android:label="fragment_gallery"
         tools:layout="@layout/fragment_gallery" />
 </navigation>
