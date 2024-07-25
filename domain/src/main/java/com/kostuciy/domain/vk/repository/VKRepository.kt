@@ -1,6 +1,11 @@
 package com.kostuciy.domain.vk.repository
 
-interface VKRepository {
+import com.kostuciy.domain.core.model.Result
+import com.kostuciy.domain.profile.model.MessengerUser
+import kotlinx.coroutines.flow.Flow
 
-    suspend fun getProfileInfo()
+interface VKRepository {
+    suspend fun getProfileUser(id: Long): Flow<Result<Boolean>>
+
+    suspend fun getUsers(ids: List<Long>): Flow<Result<List<MessengerUser.VKUser>>>
 }

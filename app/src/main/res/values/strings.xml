@@ -21,5 +21,7 @@
     <string name="messengers">Messengers</string>
     <string name="vk_messenger">VKontakte</string>
     <integer name="com_vk_sdk_AppId" translatable="false">51984160</integer>
+    <string name="not_logged">Not logged in</string>
+    <string name="getting_data">Getting data</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

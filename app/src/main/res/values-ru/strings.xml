@@ -19,4 +19,6 @@
     <string name="base_info">Основная информация</string>
     <string name="messengers">Мессенджеры</string>
     <string name="vk_messenger">Вконтакте</string>
+    <string name="not_logged">Не вошел</string>
+    <string name="getting_data">Загрузка данных</string>
 </resources>

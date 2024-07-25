@@ -16,5 +16,9 @@ interface ProfileRepository {
         username: String,
     ): Flow<Result<Boolean>>
 
-    suspend fun saveToken(token: Token?): Flow<Result<Boolean>>
+    suspend fun saveToken(token: Token): Flow<Result<Boolean>>
+
+    suspend fun checkVKTokenExists(): Boolean
+
+    suspend fun checkTelegramTokenExists(): Boolean
 }

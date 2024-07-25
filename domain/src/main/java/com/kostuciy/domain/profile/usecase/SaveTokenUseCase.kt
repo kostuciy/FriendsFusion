@@ -9,5 +9,5 @@ class SaveTokenUseCase
     constructor(
         private val repository: ProfileRepository,
     ) {
-        suspend fun execute(token: Token?) = repository.saveToken(token)
+        suspend fun execute(token: Token) = repository.saveToken(token)
     }

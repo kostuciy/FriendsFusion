@@ -1,15 +1,21 @@
 package com.kostuciy.friendsfusion.profile.viewmodel
 
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kostuciy.data.profile.entity.MessengerType
 import com.kostuciy.domain.core.model.Result
+import com.kostuciy.domain.profile.model.MessengerUser
 import com.kostuciy.domain.profile.model.ProfileState
 import com.kostuciy.domain.profile.model.Token
 import com.kostuciy.domain.profile.model.User
+import com.kostuciy.domain.profile.usecase.CheckTelegramTokenExistsUseCase
+import com.kostuciy.domain.profile.usecase.CheckVKTokenExistsUseCase
 import com.kostuciy.domain.profile.usecase.EditProfileUseCase
 import com.kostuciy.domain.profile.usecase.GetProfileDataUseCase
+import com.kostuciy.domain.profile.usecase.GetVKMessengerUserUseCase
 import com.kostuciy.domain.profile.usecase.SaveTokenUseCase
 import com.kostuciy.domain.profile.usecase.UpdateProfileDataUseCase
 import com.vk.api.sdk.VK
@@ -31,6 +37,9 @@ class ProfileViewModel @Inject constructor(
     private val getProfileDataUseCase: GetProfileDataUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val updateProfileDataUseCase: UpdateProfileDataUseCase,
+    private val checkVKTokenExistsUseCase: CheckVKTokenExistsUseCase,
+    private val checkTelegramTokenExistsUseCase: CheckTelegramTokenExistsUseCase,
+    private val getVKMessengerUserUseCase: GetVKMessengerUserUseCase,
 ) : ViewModel() {
     private var _state: MutableStateFlow<ProfileState> =
         MutableStateFlow(ProfileState.Loading)
@@ -62,6 +71,58 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun editProfile(
+        email: String,
+        password: String,
+        username: String,
+    ) = viewModelScope.launch {
+        setState(editProfileUseCase.execute(email, password, username))
+    }
+
+    fun updateProfileData() =
+        viewModelScope.launch {
+            setState(updateProfileDataUseCase.execute())
+        }
+
+    fun signOut() {
+        _state.value = ProfileState.Profile(null)
+    }
+
+    fun hasToken(
+        messengerType: MessengerType,
+        profileState: ProfileState.Profile,
+    ): Boolean {
+        val tokens = profileState.user?.profile?.tokens ?: return false
+        return when (messengerType) {
+            MessengerType.VK -> tokens.filterIsInstance<Token.VKToken>().isNotEmpty()
+            MessengerType.TELEGRAM -> tokens.filterIsInstance<Token.TelegramToken>().isNotEmpty()
+        }
+    }
+
+    private fun saveToken(token: Token) =
+        viewModelScope.launch {
+            setState(saveTokenUseCase.execute(token))
+        }
+
+    fun getMessengerUser(
+        profileState: ProfileState.Profile,
+        type: MessengerType,
+    ): MessengerUser? =
+        when (type) {
+            MessengerType.VK ->
+                profileState
+                    .user
+                    ?.linkedMessengerUsers
+                    ?.filterIsInstance<MessengerUser.VKUser>()
+                    ?.firstOrNull()
+            MessengerType.TELEGRAM ->
+                profileState
+                    .user
+                    ?.linkedMessengerUsers
+                    ?.filterIsInstance<MessengerUser.TelegramUser>()
+                    ?.firstOrNull()
+        }
+
     fun setVkAuthResultLauncher(activity: ComponentActivity?) {
         if (vkAuthResultLauncher != null || activity == null) return
 
@@ -72,36 +133,21 @@ class ProfileViewModel @Inject constructor(
                         with(result.token) {
                             val vkToken =
                                 Token.VKToken(userId.value, accessToken)
-//                                TODO: save token to db
+                            saveToken(vkToken)
+                            fetchVKMessengerUser(vkToken.id)
                         }
                     }
 
                     is VKAuthenticationResult.Failed -> {
-//                            TODO: do something
+//                        TODO: do something else
+                        Toast.makeText(activity, "bebebaba", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
     }
 
-    fun editProfile(
-        email: String,
-        password: String,
-        username: String,
-    ) = viewModelScope.launch {
-        setState(editProfileUseCase.execute(email, password, username))
-    }
-
-    fun saveToken(token: Token?) =
+    private fun fetchVKMessengerUser(id: Long) =
         viewModelScope.launch {
-            setState(saveTokenUseCase.execute(token))
+            setState(getVKMessengerUserUseCase.execute(id))
         }
-
-    fun updateProfileData() =
-        viewModelScope.launch {
-            setState(updateProfileDataUseCase.execute())
-        }
-
-    fun signOut() {
-        _state.value = ProfileState.Profile(null)
-    }
 }

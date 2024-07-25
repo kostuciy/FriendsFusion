@@ -11,10 +11,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.kostuciy.data.profile.entity.MessengerType
+import com.kostuciy.domain.profile.model.MessengerUser
 import com.kostuciy.domain.profile.model.ProfileState
 import com.kostuciy.friendsfusion.R
 import com.kostuciy.friendsfusion.auth.viewmodel.AuthViewModel
 import com.kostuciy.friendsfusion.core.utils.AppUtils
+import com.kostuciy.friendsfusion.core.utils.ViewUtils.loadFromUrlCircle
 import com.kostuciy.friendsfusion.databinding.FragmentProfileBinding
 import com.kostuciy.friendsfusion.profile.viewmodel.ProfileViewModel
 import com.vk.api.sdk.auth.VKScope
@@ -57,10 +60,9 @@ class ProfileFragment : Fragment() {
                 profileViewModel.editProfile(email, password, username)
             }
 
+            val vkScopeSet = VKScope.entries.toMutableSet().filter { it == VKScope.PHONE }
             vkAuthenticate.setOnClickListener {
-                profileViewModel.vkAuthResultLauncher?.launch(
-                    arrayListOf(VKScope.WALL, VKScope.PHOTOS),
-                )
+                profileViewModel.vkAuthResultLauncher?.launch(vkScopeSet)
             }
         }
 
@@ -89,9 +91,10 @@ class ProfileFragment : Fragment() {
                             }
                         is ProfileState.Loading ->
                             with(binding) {
-                                this.submitChanges.isEnabled = false
-                                this.signOut.isEnabled = false
-                                this.progressBar.isVisible = true
+                                profileTitle.text = getString(R.string.getting_data)
+                                submitChanges.isEnabled = false
+                                signOut.isEnabled = false
+                                progressBar.isVisible = true
                             }
                     }
                 }
@@ -107,11 +110,6 @@ class ProfileFragment : Fragment() {
     ) {
         if (state.user == null) return
         with(binding) {
-            vkAuthenticate.isEnabled =
-                state.user!!
-                    .profile!!
-                    .tokens
-                    .isEmpty() // TODO: remove test
             progressBar.isVisible = false
             submitChanges.isEnabled = true
             signOut.isEnabled = true
@@ -123,6 +121,20 @@ class ProfileFragment : Fragment() {
                 )
             username.setText(state.user!!.username)
             email.setText(state.user!!.profile!!.email)
+
+            vkAuthenticate.isEnabled = !profileViewModel.hasToken(MessengerType.VK, state)
+//            telegramAuthenticate.isEnabled = !profileViewModel.hasToken(MessengerType.Telegram, state) // TODO
+
+            with(profileViewModel.getMessengerUser(state, MessengerType.VK)) {
+                if (this !is MessengerUser.VKUser) {
+                    vkName.text = getString(R.string.not_logged)
+                    return@with
+                }
+                vkName.text = name
+                avatarUrl?.let {
+                    vkAvatar.loadFromUrlCircle(it)
+                }
+            }
         }
     }
 }

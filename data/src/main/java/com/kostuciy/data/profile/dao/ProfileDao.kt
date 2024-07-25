@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.kostuciy.data.profile.entity.MessengerType
 import com.kostuciy.data.profile.entity.MessengerUserEntity
 import com.kostuciy.data.profile.entity.TokenEntity
 import com.kostuciy.data.profile.entity.UserEntity
@@ -24,6 +25,9 @@ interface ProfileDao {
     @Query("SELECT * FROM tokens")
     fun getTokensFlow(): Flow<List<TokenEntity>>
 
+    @Query("SELECT * FROM tokens")
+    suspend fun getTokens(): List<TokenEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTokens(tokens: List<TokenEntity>)
 
@@ -32,4 +36,16 @@ interface ProfileDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessengers(messengers: List<MessengerUserEntity>)
+
+    @Query("DELETE FROM tokens WHERE messenger = :messengerType")
+    suspend fun deleteToken(messengerType: MessengerType)
+
+    @Query("DELETE FROM users_messengers WHERE userId = :userId AND type = :messengerType")
+    suspend fun deleteMessenger(
+        userId: Long,
+        messengerType: MessengerType,
+    )
+
+    @Query("SELECT EXISTS (SELECT * FROM tokens WHERE messenger = :messengerType)")
+    suspend fun checkTokenExists(messengerType: MessengerType): Boolean
 }

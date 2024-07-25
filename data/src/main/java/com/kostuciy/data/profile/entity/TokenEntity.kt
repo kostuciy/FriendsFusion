@@ -6,9 +6,9 @@ import com.kostuciy.domain.profile.model.Token
 
 @Entity(tableName = "tokens")
 data class TokenEntity(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val messenger: MessengerType,
+    val id: Long,
     val accessToken: String,
-    val messenger: MessengerType,
 ) {
     fun toModel(): Token =
         when (this.messenger) {

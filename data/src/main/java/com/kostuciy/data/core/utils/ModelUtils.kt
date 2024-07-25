@@ -25,13 +25,15 @@ object ModelUtils {
                     userId,
                     name,
                     MessengerType.VK,
+                    avatarUrl,
                 )
         }
 
     fun Token.toEntity() =
         when (this) {
-            is Token.VKToken -> TokenEntity(id, accessToken, MessengerType.VK)
-//        TODO: add telegram later
+            is Token.VKToken -> TokenEntity(MessengerType.VK, id, accessToken)
+//        TODO: change telegram later
+            is Token.TelegramToken -> TokenEntity(MessengerType.TELEGRAM, id, accessToken)
         }
 
     fun User.toEntity() =

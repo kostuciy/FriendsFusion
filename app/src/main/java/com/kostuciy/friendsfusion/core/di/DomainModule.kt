@@ -2,16 +2,21 @@ package com.kostuciy.friendsfusion.core.di
 
 import com.kostuciy.data.auth.repository.AuthRepositoryImpl
 import com.kostuciy.data.profile.repository.ProfileRepositoryImpl
+import com.kostuciy.data.vk.repository.VKRepositoryImpl
 import com.kostuciy.domain.auth.repository.AuthRepository
 import com.kostuciy.domain.auth.usecase.RegisterUseCase
 import com.kostuciy.domain.auth.usecase.SignInUseCase
 import com.kostuciy.domain.auth.usecase.SignOutUseCase
 import com.kostuciy.domain.auth.usecase.UpdateAuthDataUseCase
 import com.kostuciy.domain.profile.repository.ProfileRepository
+import com.kostuciy.domain.profile.usecase.CheckTelegramTokenExistsUseCase
+import com.kostuciy.domain.profile.usecase.CheckVKTokenExistsUseCase
 import com.kostuciy.domain.profile.usecase.EditProfileUseCase
 import com.kostuciy.domain.profile.usecase.GetProfileDataUseCase
+import com.kostuciy.domain.profile.usecase.GetVKMessengerUserUseCase
 import com.kostuciy.domain.profile.usecase.SaveTokenUseCase
 import com.kostuciy.domain.profile.usecase.UpdateProfileDataUseCase
+import com.kostuciy.domain.vk.repository.VKRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -31,6 +36,10 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindVKRepository(vkRepositoryImpl: VKRepositoryImpl): VKRepository
 }
 
 @Module
@@ -67,4 +76,16 @@ object UseCaseModule {
     @Provides
     @ViewModelScoped
     fun provideUpdateProfileDataUseCase(repository: ProfileRepository) = UpdateProfileDataUseCase(repository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideCheckVKTokenExistsUseCase(repository: ProfileRepository) = CheckVKTokenExistsUseCase(repository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideCheckTelegramExistsUseCase(repository: ProfileRepository) = CheckTelegramTokenExistsUseCase(repository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetVKMessengerUser(repository: VKRepository) = GetVKMessengerUserUseCase(repository)
 }

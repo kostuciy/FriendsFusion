@@ -144,27 +144,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
-    <Button
-        android:id="@+id/vkAuthenticate"
+    <TextView
+        android:id="@+id/vkMessanger"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/small"
-        android:text="@string/login"
-        app:layout_constraintEnd_toEndOf="@+id/password"
-        app:layout_constraintStart_toEndOf="@+id/vkMessanger"
-        app:layout_constraintTop_toBottomOf="@+id/messengers" />
-
-    <TextView
-        android:id="@+id/vkMessanger"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginVertical="@dimen/small"
+        android:layout_marginTop="@dimen/small"
         android:gravity="center"
         android:text="@string/vk_messenger"
-        android:textSize="@dimen/body"
+        android:textSize="@dimen/caption"
+        app:layout_constraintStart_toStartOf="@+id/vkName"
+        app:layout_constraintTop_toBottomOf="@+id/vkName" />
+
+    <ImageButton
+        android:id="@+id/vkAuthenticate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/small"
+        android:layout_marginVertical="@dimen/medium"
+        android:src="@drawable/baseline_add_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messengers" />
+
+    <ImageView
+        android:id="@+id/vkAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/small"
         app:layout_constraintBottom_toBottomOf="@+id/vkAuthenticate"
-        app:layout_constraintEnd_toStartOf="@+id/vkAuthenticate"
-        app:layout_constraintStart_toStartOf="@+id/password"
-        app:layout_constraintTop_toTopOf="@+id/vkAuthenticate" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vkAuthenticate"
+        app:srcCompat="@drawable/baseline_person_24"
+        tools:src="@drawable/baseline_person_24" />
+
+    <TextView
+        android:id="@+id/vkName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/small"
+        android:text="@string/not_logged"
+        android:textSize="@dimen/body"
+        app:layout_constraintStart_toEndOf="@+id/vkAvatar"
+        app:layout_constraintTop_toTopOf="@+id/vkAvatar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@
 agp = "8.5.0"
 androidSdkCore = "4.1.0"
 firebaseBom = "33.1.1"
+glide = "4.16.0"
 gson = "2.10.1"
 hiltAndroid = "2.46"
 hiltAndroidCompiler = "2.46"
@@ -29,6 +30,7 @@ roomRuntime = "2.6.1"
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 vk-sdk-api = { module = "com.vk:android-sdk-api", version.ref = "androidSdkCore" }

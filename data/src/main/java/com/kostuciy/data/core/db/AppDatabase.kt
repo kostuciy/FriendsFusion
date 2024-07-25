@@ -10,7 +10,7 @@ import com.kostuciy.data.profile.entity.MessengerUserEntity
 import com.kostuciy.data.profile.entity.TokenEntity
 import com.kostuciy.data.profile.entity.UserEntity
 
-@Database(entities = [UserEntity::class, MessengerUserEntity::class, TokenEntity::class], version = 1)
+@Database(entities = [UserEntity::class, MessengerUserEntity::class, TokenEntity::class], version = 3, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao

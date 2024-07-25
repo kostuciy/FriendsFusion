@@ -10,10 +10,11 @@ data class MessengerUserEntity(
     val userId: String? = null,
     val name: String,
     val type: MessengerType,
+    val avatarUrl: String? = null,
 ) {
     fun toModel(): MessengerUser =
         when (this.type) {
-            MessengerType.VK -> MessengerUser.VKUser(id, name)
+            MessengerType.VK -> MessengerUser.VKUser(id, name, avatarUrl)
             MessengerType.TELEGRAM -> MessengerUser.TelegramUser(id, name)
             // TODO: change telegram
         }

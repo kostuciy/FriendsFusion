@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.kostuciy.data.core.utils.FlowUtils.asResult
 import com.kostuciy.data.core.utils.ModelUtils.toEntity
 import com.kostuciy.data.profile.dao.ProfileDao
+import com.kostuciy.data.profile.entity.MessengerType
 import com.kostuciy.data.profile.entity.MessengerUserEntity
 import com.kostuciy.data.profile.entity.TokenEntity
 import com.kostuciy.data.profile.entity.UserEntity
@@ -16,6 +17,9 @@ import com.kostuciy.domain.profile.model.Token
 import com.kostuciy.domain.profile.model.User
 import com.kostuciy.domain.profile.model.UserProfile
 import com.kostuciy.domain.profile.repository.ProfileRepository
+import com.vk.api.sdk.VK
+import com.vk.dto.common.id.UserId
+import com.vk.sdk.api.users.UsersService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.zip
@@ -104,24 +108,15 @@ class ProfileRepositoryImpl @Inject constructor(
             emit(true)
         }.asResult()
 
-    private fun getTokens(): List<Token> {
-//        TODO: do with shared prefs
-        return emptyList()
-    }
-
-    private suspend fun getMessengerUsers(): List<MessengerUser> {
-//        TODO: figure out if needs to be executed there
-        return emptyList()
-    }
-
-    //    TODO: redo tokens in general
-    override suspend fun saveToken(token: Token?): Flow<Result<Boolean>> =
+    override suspend fun saveToken(token: Token): Flow<Result<Boolean>> =
         flow {
-            dao.insertTokens(
-                listOf(token?.toEntity() ?: throw IllegalAccessError("No current user")),
-            )
+            dao.insertTokens(listOf(token.toEntity()))
             emit(true)
         }.asResult()
+
+    override suspend fun checkVKTokenExists(): Boolean = dao.checkTokenExists(MessengerType.VK)
+
+    override suspend fun checkTelegramTokenExists(): Boolean = dao.checkTokenExists(MessengerType.TELEGRAM)
 
     private fun compareLocalAndFirebaseUser(
         firebaseUser: FirebaseUser,
